@@ -30,7 +30,8 @@ const Header = () => {
             </Link>
             <Button 
               size="sm" 
-              className="bg-secondary hover:bg-secondary/90"
+              variant="outline"
+              className="border-secondary text-secondary hover:bg-secondary/10"
               onClick={() => setShowLoginModal(true)}
             >
               Log In
