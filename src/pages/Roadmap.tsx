@@ -2,107 +2,111 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { BookOpen, Briefcase, Store, Users } from "lucide-react";
+import { Users } from "lucide-react";
 
-interface RoadmapStep {
-  stage: string;
-  title: string;
-  salary: string;
-  description: string;
-  skills: string[];
-  icon: any;
-  color: string;
+interface GeminiRoadmapStep {
+  level: string;
+  role: string;
+  income: string;
+  action: string;
+  resource: string;
 }
 
-const mockRoadmaps: Record<string, RoadmapStep[]> = {
-  tailoring: [
-    {
-      stage: "Stage 1: Beginner",
-      title: "Stitching Helper (₹8k/month)",
-      salary: "₹8,000 - ₹12,000/month",
-      description: "Learn foundational skills like basic stitching, machine operation, and fabric handling.",
-      skills: ["Stitching", "Machine Operation", "Fabric Handling"],
-      icon: BookOpen,
-      color: "text-secondary",
-    },
-    {
-      stage: "Stage 2: Intermediate",
-      title: "Master Cutter (₹15k/month)",
-      salary: "₹15,000 - ₹25,000/month",
-      description: "Master pattern making, precision cutting, and complex garment construction techniques.",
-      skills: ["Pattern Making", "Precision Cutting", "Garment Construction"],
-      icon: Briefcase,
-      color: "text-accent",
-    },
-    {
-      stage: "Stage 3: Advanced",
-      title: "Boutique Owner",
-      salary: "₹30,000+ /month (potential)",
-      description: "Focus on entrepreneurial skills like business management, client relations, and brand building.",
-      skills: ["Business Management", "Client Relations", "Brand Building"],
-      icon: Store,
-      color: "text-primary",
-    },
-  ],
-  welding: [
-    {
-      stage: "Stage 1: Beginner",
-      title: "Welding Assistant (₹10k/month)",
-      salary: "₹10,000 - ₹15,000/month",
-      description: "Learn basic welding techniques, safety protocols, and equipment handling.",
-      skills: ["Arc Welding", "Safety Protocols", "Equipment Handling"],
-      icon: BookOpen,
-      color: "text-secondary",
-    },
-    {
-      stage: "Stage 2: Intermediate",
-      title: "Certified Welder (₹20k/month)",
-      salary: "₹20,000 - ₹35,000/month",
-      description: "Master advanced welding techniques including TIG, MIG, and structural welding.",
-      skills: ["TIG Welding", "MIG Welding", "Structural Welding"],
-      icon: Briefcase,
-      color: "text-accent",
-    },
-    {
-      stage: "Stage 3: Advanced",
-      title: "Welding Contractor",
-      salary: "₹50,000+ /month (potential)",
-      description: "Start your own welding business with project management and client acquisition skills.",
-      skills: ["Project Management", "Client Acquisition", "Team Leadership"],
-      icon: Store,
-      color: "text-primary",
-    },
-  ],
-};
+interface GeminiRoadmap {
+  career_path_title: string;
+  steps: GeminiRoadmapStep[];
+  motivation_quote: string;
+}
 
 const Roadmap = () => {
   const { skill } = useParams<{ skill: string }>();
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
+  const [roadmap, setRoadmap] = useState<GeminiRoadmap | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const roadmapData = skill ? mockRoadmaps[skill] || [] : [];
   const skillName = skill ? skill.charAt(0).toUpperCase() + skill.slice(1) : "";
 
   useEffect(() => {
-    // Simulate AI processing
-    setProgress(0);
-    const timer = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(timer);
-          setLoading(false);
-          return 100;
-        }
-        return prev + 20;
-      });
-    }, 300);
+    if (!skill) return;
 
-    return () => clearInterval(timer);
-  }, [skill]);
+    // Simulate AI processing
+    setLoading(true);
+    setProgress(0);
+    setError(null);
+    setRoadmap(null);
+
+    const fetchRoadmap = async () => {
+      const apiKey = import.meta.env.VITE_OPENAI_API_KEY as string | undefined;
+
+      if (!apiKey) {
+        setError("OpenAI API key is missing. Please set VITE_OPENAI_API_KEY in your .env.");
+        setLoading(false);
+        setProgress(100);
+        return;
+      }
+
+      try {
+        const systemPrompt =
+          "You are \"SkillSaarthi,\" an expert career counselor for the Indian rural economy. " +
+          "The user will provide a raw skill (e.g., \"Driving\", \"Cooking\", \"Excel\"). You must output a structured JSON response. " +
+          "The user is likely from a Tier-2/3 city in India. Do not suggest expensive degrees. Suggest practical, vocational steps. " +
+          "Required JSON Output Format: { \"career_path_title\": \"e.g., Commercial Driver to Fleet Owner\", \"steps\": [ { \"level\": \"Entry Level\", \"role\": \"e.g., Taxi Driver / Delivery Partner\", \"income\": \"₹15,000 - ₹20,000\", \"action\": \"Get Commercial License\", \"resource\": \"Link to Parivahan Sewa\" }, { \"level\": \"Mid Level\", \"role\": \"e.g., Heavy Vehicle Driver\", \"income\": \"₹30,000+\", \"action\": \"Apply to Logistics Companies\", \"resource\": \"Search 'Trucking Jobs' on Indeed\" }, { \"level\": \"Dream Level\", \"role\": \"e.g., Transport Agency Owner\", \"income\": \"Variable\", \"action\": \"Register MSME\", \"resource\": \"PM-Vishwakarma Scheme details\" } ], \"motivation_quote\": \"A short, encouraging quote in Hinglish.\" }";
+
+        const userSkill = skillName || skill;
+
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify({
+            model: "gpt-4o",
+            messages: [
+              {
+                role: "system",
+                content: systemPrompt,
+              },
+              {
+                role: "user",
+                content: `User skill: ${userSkill}. Return ONLY a valid JSON object with the required fields.`,
+              },
+            ],
+            temperature: 0.7,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to generate roadmap");
+        }
+
+        const data = await response.json();
+        const rawText: string = data.choices?.[0]?.message?.content || "";
+
+        const cleaned = rawText
+          .trim()
+          .replace(/^```json\s*/i, "")
+          .replace(/^```/, "")
+          .replace(/```$/, "")
+          .trim();
+
+        const parsed: GeminiRoadmap = JSON.parse(cleaned);
+        setRoadmap(parsed);
+      } catch (err) {
+        console.error("OpenAI error:", err);
+        setError("Unable to generate roadmap right now. Please try again.");
+      } finally {
+        setLoading(false);
+        setProgress(100);
+      }
+    };
+
+    fetchRoadmap();
+  }, [skill, skillName]);
 
   if (loading) {
     return (
@@ -126,7 +130,29 @@ const Roadmap = () => {
     );
   }
 
-  if (roadmapData.length === 0) {
+  if (!loading && error) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center max-w-md px-4">
+            <h2 className="text-2xl font-bold text-primary mb-3">
+              Unable to generate roadmap
+            </h2>
+            <p className="text-muted-foreground mb-2">
+              {error}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Please try again in a few moments or with a different skill.
+            </p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!loading && (!roadmap || roadmap.steps.length === 0)) {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
@@ -182,55 +208,30 @@ const Roadmap = () => {
               <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-border hidden md:block" />
 
               <div className="space-y-8">
-                {roadmapData.map((step, index) => (
+                {roadmap?.steps.map((step, index) => (
                   <Card key={index} className="relative md:ml-20 shadow-lg hover:shadow-xl transition-shadow">
-                    {/* Icon circle */}
-                    <div className="absolute -left-12 top-8 hidden md:flex h-16 w-16 items-center justify-center rounded-full bg-secondary shadow-lg">
-                      <step.icon className="h-8 w-8 text-secondary-foreground" />
-                    </div>
-
                     <CardHeader>
                       <div className="flex items-start justify-between gap-4">
                         <div>
                           <Badge className="mb-2 bg-success/10 text-success hover:bg-success/20">
-                            {step.stage}
+                            {step.level}
                           </Badge>
-                          <CardTitle className="text-2xl mb-1">{step.title}</CardTitle>
-                          <p className="text-sm text-muted-foreground">{step.description}</p>
-                        </div>
-                        <div className="md:hidden">
-                          <step.icon className={`h-10 w-10 ${step.color}`} />
+                          <CardTitle className="text-2xl mb-1">{step.role}</CardTitle>
+                          <p className="text-sm text-muted-foreground mb-1">
+                            Estimated income: {step.income}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            Next action: {step.action}
+                          </p>
                         </div>
                       </div>
                     </CardHeader>
 
                     <CardContent>
-                      <div className="space-y-4">
-                        <div>
-                          <h4 className="text-sm font-semibold text-muted-foreground mb-2">
-                            Key Skills Required:
-                          </h4>
-                          <div className="flex flex-wrap gap-2">
-                            {step.skills.map((skill, i) => (
-                              <Badge key={i} variant="outline">
-                                {skill}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="pt-4 flex flex-col sm:flex-row gap-3">
-                          <Button className="bg-secondary hover:bg-secondary/90 flex-1">
-                            {index === 0 ? "Explore Beginner Skills" : 
-                             index === 1 ? "View Intermediate Path" : 
-                             "Learn About Ownership"}
-                          </Button>
-                          {index < roadmapData.length - 1 && (
-                            <Button variant="outline" className="flex-1">
-                              View Course Details
-                            </Button>
-                          )}
-                        </div>
+                      <div className="space-y-2">
+                        <p className="text-sm text-primary font-medium break-words">
+                          Resource: {step.resource}
+                        </p>
                       </div>
                     </CardContent>
                   </Card>
@@ -240,22 +241,16 @@ const Roadmap = () => {
           </div>
         </section>
 
-        {/* CTA Section */}
-        <section className="bg-primary py-12 px-4">
-          <div className="container mx-auto max-w-4xl text-center text-primary-foreground">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">
-              Ready to Start Your Journey?
-            </h2>
-            <p className="text-lg mb-6 opacity-90">
-              Explore government schemes and training programs available for {skillName}
-            </p>
-            <Button size="lg" className="bg-secondary hover:bg-secondary/90">
-              Browse Training Programs
-            </Button>
-          </div>
-        </section>
+        {roadmap?.motivation_quote && (
+          <section className="py-8 px-4">
+            <div className="container mx-auto max-w-3xl text-center">
+              <p className="text-lg italic text-muted-foreground">
+                {roadmap.motivation_quote}
+              </p>
+            </div>
+          </section>
+        )}
       </main>
-
       <Footer />
     </div>
   );

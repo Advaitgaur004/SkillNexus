@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Mic } from "lucide-react";
+import { Search } from "lucide-react";
 
 const SkillSearch = () => {
   const [skill, setSkill] = useState("");
@@ -15,10 +15,26 @@ const SkillSearch = () => {
     }
   };
 
-  const popularSkills = ["Tailoring", "Welding", "Data Entry", "Plumbing", "Carpentry"];
+  const popularSkills = [
+    "Tailoring",
+    "Welding",
+    "Data Entry",
+    "Plumbing",
+    "Carpentry",
+    "Driving",
+    "Cooking",
+    "Excel",
+    "Beauty Parlour",
+    "Mobile Repair",
+    "Electrician",
+    "AC Repair",
+    "Spoken English",
+    "Computer Basics",
+    "Digital Marketing",
+  ];
 
   return (
-    <section className="relative py-20 px-4 bg-gradient-to-b from-background via-light-bg to-background">
+    <section className="relative py-20 px-4 bg-gradient-to-b from-background via-light-bg to-background text-foreground">
       {/* Decorative Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
@@ -27,22 +43,22 @@ const SkillSearch = () => {
 
       <div className="container mx-auto max-w-5xl text-center relative z-10">
         <div className="mb-4">
-          <span className="inline-block px-4 py-1 bg-secondary/10 text-secondary rounded-full text-sm font-semibold mb-4">
+          <span className="inline-block px-4 py-1 bg-secondary/10 text-foreground rounded-full text-sm font-semibold mb-4">
             Trusted by 50,000+ Users
           </span>
         </div>
         
-        <h1 className="text-4xl md:text-6xl font-bold text-primary mb-4 leading-tight animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <h1 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
           Chart Your Career Path
         </h1>
-        <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
+        <p className="text-lg text-foreground/80 mb-8 max-w-2xl mx-auto">
           Your guide to government-backed skill development and employment opportunities.
         </p>
 
         <form onSubmit={handleSubmit} className="max-w-2xl mx-auto mb-8">
           <div className="flex flex-col sm:flex-row gap-3 items-center bg-background rounded-xl border-2 border-border p-2 shadow-xl hover:shadow-2xl transition-shadow">
             <div className="flex items-center flex-1 w-full">
-              <Search className="h-5 w-5 text-muted-foreground ml-3" />
+              <Search className="h-5 w-5 text-foreground/70" />
               <Input
                 type="text"
                 placeholder="Type a skill (e.g., Tailoring, Welding, Data Entry)"
@@ -50,9 +66,6 @@ const SkillSearch = () => {
                 onChange={(e) => setSkill(e.target.value)}
                 className="border-0 focus-visible:ring-0 text-base"
               />
-              <button type="button" className="p-2 hover:bg-muted rounded-lg transition-colors">
-                <Mic className="h-5 w-5 text-muted-foreground" />
-              </button>
             </div>
             <Button 
               type="submit"
@@ -66,7 +79,7 @@ const SkillSearch = () => {
 
         {/* Popular Skills */}
         <div className="mb-8">
-          <p className="text-sm text-muted-foreground mb-3">Popular searches:</p>
+          <p className="text-sm text-foreground/60 mt-8 mb-4">Popular searches:</p>
           <div className="flex flex-wrap gap-2 justify-center">
             {popularSkills.map((popularSkill) => (
               <button
@@ -75,7 +88,7 @@ const SkillSearch = () => {
                   setSkill(popularSkill);
                   navigate(`/roadmap/${popularSkill.toLowerCase()}`);
                 }}
-                className="px-4 py-2 bg-muted hover:bg-muted/80 text-foreground rounded-full text-sm font-medium transition-all hover:scale-105"
+                className="px-4 py-2 bg-muted/50 text-foreground rounded-full text-sm font-medium transition-all hover:bg-muted transition-colors cursor-pointer"
               >
                 {popularSkill}
               </button>
@@ -83,7 +96,7 @@ const SkillSearch = () => {
           </div>
         </div>
 
-        <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+        <div className="flex items-center justify-center gap-2 text-sm text-foreground/60">
           <span className="h-2 w-2 rounded-full bg-success animate-pulse" />
           <span>1,240 people searched for skills today</span>
         </div>

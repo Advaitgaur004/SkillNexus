@@ -19,25 +19,10 @@ const About = () => {
             </h2>
 
             <div className="space-y-6 text-lg text-foreground/80 leading-relaxed">
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor 
-                incididunt ut labore et dolore magna aliqua. SkillSaarthi was created with the 
-                vision of empowering rural youth across India by bridging the gap between traditional 
-                skills and modern employment opportunities. Ut enim ad minim veniam, quis nostrud 
-                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. We believe 
-                that every young person, regardless of their location or background, deserves access 
-                to quality skill development programs and meaningful career guidance.
-              </p>
-
-              <p>
-                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
-                fugiat nulla pariatur. Through our platform, we connect rural youth with government-backed 
-                skill development schemes, training programs, and employment opportunities. Excepteur 
-                sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim 
-                id est laborum. Our goal is to help transform lives by turning skills into sustainable 
-                livelihoods, creating a pathway from learning to earning for millions of young Indians 
-                who aspire to build a better future for themselves and their communities.
-              </p>
+              <p> We are <strong>final-year students at IIT Jodhpur</strong> who have witnessed how millions of skilled individuals in India; especially from rural and low-income backgrounds ; struggle to find the right guidance and opportunities to grow. Despite having strong abilities in fields like tailoring, carpentry, welding, data entry, or basic computer skills, many remain under-employed simply because they lack career direction, awareness of opportunities, or access to structured pathways. </p> 
+              <p> We created <strong>SkillSaarthi</strong> to bridge this gap. As engineering students, we have seen how technology and AI can transform lives when used thoughtfully.</p>
+              <p> <strong>Our motivation was simple</strong>: to build a platform that understands a person’s existing skills, connects them to relevant jobs or self-employment options, and provides a clear, achievable roadmap for upgrading their livelihood. We believe that skill should never limit someone’s future; only the lack of guidance does.</p> 
+              <p> Through SkillSaarthi, we aim to empower individuals with personalized career pathways, accessible learning plans, and real-world opportunity links;from government schemes to freelancing platforms. Our goal is to help people move confidently from informal work to stable, dignified, and sustainable income sources. As students who strongly believe in human-centered design, SkillSaarthi reflects our commitment to using technology for social impact and enabling India’s skilled workforce to realize its full potential. </p>
             </div>
           </div>
         </section>

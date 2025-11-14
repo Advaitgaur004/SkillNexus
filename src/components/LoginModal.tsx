@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 
-const mobileSchema = z.object({
-  mobile: z.string()
-    .trim()
-    .regex(/^[6-9]\d{9}$/, { message: "Please enter a valid 10-digit mobile number" }),
+const authSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 interface LoginModalProps {
@@ -18,34 +18,73 @@ interface LoginModalProps {
 
 const LoginModal = ({ open, onOpenChange }: LoginModalProps) => {
   const { toast } = useToast();
-  const [mobile, setMobile] = useState("");
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSendOTP = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
     
-    // Validate mobile number
-    const result = mobileSchema.safeParse({ mobile });
-    
+    // Validate form
+    const result = authSchema.safeParse(formData);
     if (!result.success) {
       setError(result.error.errors[0].message);
       return;
     }
 
-    // Mobile number is valid
-    toast({
-      title: "OTP Sent!",
-      description: `A verification code has been sent to ${mobile}`,
-    });
-    
-    setMobile("");
-    setError("");
-    onOpenChange(false);
+    setLoading(true);
+
+    try {
+      if (isSignUp) {
+        // Handle sign up
+        const { error: signUpError } = await supabase.auth.signUp({
+          email: formData.email,
+          password: formData.password,
+        });
+
+        if (signUpError) throw signUpError;
+
+        toast({
+          title: "Success!",
+          description: "Account created! Please check your email to verify your account.",
+        });
+      } else {
+        // Handle sign in
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email: formData.email,
+          password: formData.password,
+        });
+
+        if (signInError) throw signInError;
+
+        toast({
+          title: "Welcome back!",
+          description: "You've been successfully signed in.",
+        });
+      }
+
+      // Reset form and close modal on success
+      setFormData({ email: "", password: "" });
+      onOpenChange(false);
+    } catch (err) {
+      console.error("Authentication error:", err);
+      setError(err.message || "An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, "").slice(0, 10);
-    setMobile(value);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
     if (error) setError("");
   };
 
@@ -54,23 +93,45 @@ const LoginModal = ({ open, onOpenChange }: LoginModalProps) => {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-primary text-center">
-            Welcome Back
+            {isSignUp ? "Create an Account" : "Welcome Back"}
           </DialogTitle>
+          <DialogDescription className="text-center">
+            {isSignUp 
+              ? "Sign up to save your progress"
+              : "Sign in to access your saved roadmaps"}
+          </DialogDescription>
         </DialogHeader>
         
-        <form onSubmit={handleSendOTP} className="space-y-6 py-4">
+        <form onSubmit={handleSubmit} className="space-y-4 py-4">
           <div>
-            <label htmlFor="mobile" className="text-sm font-medium mb-2 block">
-              Mobile Number
+            <label htmlFor="email" className="text-sm font-medium mb-1 block">
+              Email
             </label>
             <Input 
-              id="mobile"
-              type="tel"
-              placeholder="Enter 10-digit mobile number" 
-              value={mobile}
-              onChange={handleMobileChange}
+              id="email"
+              name="email"
+              type="email"
+              placeholder="your@email.com"
+              value={formData.email}
+              onChange={handleChange}
+              disabled={loading}
               className={error ? "border-destructive" : ""}
-              maxLength={10}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="password" className="text-sm font-medium mb-1 block">
+              Password
+            </label>
+            <Input 
+              id="password"
+              name="password"
+              type="password"
+              placeholder="••••••••"
+              value={formData.password}
+              onChange={handleChange}
+              disabled={loading}
+              className={error ? "border-destructive" : ""}
             />
             {error && (
               <p className="text-sm text-destructive mt-1">{error}</p>
@@ -79,11 +140,32 @@ const LoginModal = ({ open, onOpenChange }: LoginModalProps) => {
 
           <Button 
             type="submit" 
-            className="w-full bg-secondary hover:bg-secondary/90" 
-            size="lg"
+            className="w-full bg-primary hover:bg-primary/90 text-white"
+            disabled={loading}
           >
-            Send OTP
+            {loading 
+              ? isSignUp 
+                ? "Creating Account..." 
+                : "Signing In..."
+              : isSignUp 
+                ? "Sign Up" 
+                : "Sign In"}
           </Button>
+
+          <div className="text-center text-sm text-muted-foreground">
+            {isSignUp ? "Already have an account? " : "Don't have an account? "}
+            <button
+              type="button"
+              onClick={() => {
+                setIsSignUp(!isSignUp);
+                setError("");
+              }}
+              className="text-primary hover:underline"
+              disabled={loading}
+            >
+              {isSignUp ? "Sign In" : "Sign Up"}
+            </button>
+          </div>
         </form>
       </DialogContent>
     </Dialog>
