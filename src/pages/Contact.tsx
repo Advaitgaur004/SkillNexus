@@ -65,7 +65,7 @@ const Contact = () => {
       <Header />
       
       <main className="flex-1">
-        <section className="bg-gradient-to-b from-primary/5 to-background py-16 px-4">
+        <section className="bg-background py-16 px-4">
           <div className="container mx-auto max-w-2xl">
             <h1 className="text-4xl md:text-5xl font-bold text-primary mb-12 text-center">
               Get in Touch

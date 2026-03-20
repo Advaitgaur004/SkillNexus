@@ -170,7 +170,7 @@ const Schemes = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <section className="bg-gradient-to-b from-primary/5 to-background py-12 px-4">
+        <section className="bg-background py-12 px-4">
           <div className="container mx-auto max-w-6xl">
             <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4 text-center">
               Explore Government Schemes

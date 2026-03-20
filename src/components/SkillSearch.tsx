@@ -34,7 +34,7 @@ const SkillSearch = () => {
   ];
 
   return (
-    <section className="relative py-20 px-4 bg-gradient-to-b from-background via-light-bg to-background text-foreground">
+    <section className="relative py-20 px-4 bg-background text-foreground">
       {/* Decorative Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
