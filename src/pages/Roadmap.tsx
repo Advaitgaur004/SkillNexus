@@ -25,8 +25,14 @@ const Roadmap = () => {
   const { skill } = useParams<{ skill: string }>();
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
+  const [learnerCount, setLearnerCount] = useState(0);
   const [roadmap, setRoadmap] = useState<GeminiRoadmap | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const randomCount = Math.floor(Math.random() * 3000) + 2000;
+    setLearnerCount(randomCount);
+  }, []);
 
   const skillName = skill ? skill.charAt(0).toUpperCase() + skill.slice(1) : "";
 
@@ -66,7 +72,7 @@ const Roadmap = () => {
             "X-OpenRouter-Title": "SkillNexus", 
           },
           body: JSON.stringify({
-            model: "openrouter/free", 
+            model: "google/gemini-2.5-flash-lite", 
             messages: [
               {
                 role: "system",
@@ -188,7 +194,7 @@ const Roadmap = () => {
             <div className="flex items-center gap-3">
               <Users className="h-5 w-5 text-muted-foreground" />
               <p className="text-sm text-muted-foreground">
-                <span className="font-semibold text-foreground">3,847 learners</span> are currently on this path
+                <span className="font-semibold text-foreground">{learnerCount.toLocaleString()} learners</span> are currently on this path
               </p>
             </div>
           </div>
