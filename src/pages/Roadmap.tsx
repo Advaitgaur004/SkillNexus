@@ -189,7 +189,7 @@ const Roadmap = () => {
           </div>
         </section>
 
-        <section className="py-6 px-4 bg-light-bg border-y">
+        <section className="py-6 px-4 bg-muted border-y">
           <div className="container mx-auto max-w-4xl">
             <div className="flex items-center gap-3">
               <Users className="h-5 w-5 text-muted-foreground" />
