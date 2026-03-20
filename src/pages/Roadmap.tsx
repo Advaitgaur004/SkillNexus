@@ -51,7 +51,7 @@ const Roadmap = () => {
 
       try {
         const systemPrompt =
-          "You are \"SkillSaarthi,\" an expert career counselor for the Indian rural economy. " +
+          "You are \"SkillNexus,\" an expert career counselor for the Indian rural economy. " +
           "The user will provide a raw skill (e.g., \"Driving\", \"Cooking\", \"Excel\"). You must output a structured JSON response. " +
           "The user is likely from a Tier-2/3 city in India. Do not suggest expensive degrees. Suggest practical, vocational steps. " +
           "Required JSON Output Format: { \"career_path_title\": \"e.g., Commercial Driver to Fleet Owner\", \"steps\": [ { \"level\": \"Entry Level\", \"role\": \"e.g., Taxi Driver / Delivery Partner\", \"income\": \"₹15,000 - ₹20,000\", \"action\": \"Get Commercial License\", \"resource\": \"Link to Parivahan Sewa\" }, { \"level\": \"Mid Level\", \"role\": \"e.g., Heavy Vehicle Driver\", \"income\": \"₹30,000+\", \"action\": \"Apply to Logistics Companies\", \"resource\": \"Search 'Trucking Jobs' on Indeed\" }, { \"level\": \"Dream Level\", \"role\": \"e.g., Transport Agency Owner\", \"income\": \"Variable\", \"action\": \"Register MSME\", \"resource\": \"PM-Vishwakarma Scheme details\" } ], \"motivation_quote\": \"A short, encouraging quote in Hinglish.\" }";

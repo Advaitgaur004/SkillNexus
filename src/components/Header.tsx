@@ -22,7 +22,7 @@ const Header = () => {
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary">
               <Target className="h-6 w-6 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold text-primary">SkillSaarthi</span>
+            <span className="text-xl font-bold text-primary">SkillNexus</span>
           </Link>
           
           <nav className="hidden items-center gap-6 md:flex">

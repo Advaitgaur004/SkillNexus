@@ -8,14 +8,15 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 15%;
+    /* Soft, modern background with subtle gradient feel in light mode */
+    --background: 210 20% 98%;
+    --foreground: 220 9% 15%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 15%;
+    --card: 210 15% 97%;
+    --card-foreground: 220 9% 15%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 15%;
+    --popover: 210 15% 97%;
+    --popover-foreground: 220 9% 15%;
 
     /* Deep navy blue for trust and professionalism */
     --primary: 228 100% 25%;
@@ -25,10 +26,10 @@ All colors MUST be HSL.
     --secondary: 22 95% 62%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 220 13% 95%;
+    --muted: 220 13% 92%;
     --muted-foreground: 220 9% 46%;
 
-    --accent: 142 71% 45%;
+    --accent: 210 40% 60%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
@@ -40,7 +41,7 @@ All colors MUST be HSL.
 
     --radius: 0.75rem;
     
-    /* Custom tokens for SkillSaarthi */
+    /* Custom tokens for SkillNexus */
     --brand-orange: 22 95% 62%;
     --brand-blue: 228 100% 25%;
 
@@ -68,36 +69,6 @@ All colors MUST be HSL.
     --border: 220 13% 91%;
     --input: 220 13% 91%;
     --ring: 228 100% 25%;
-  }
-
-  .dark {
-    /* Background and foreground colors */
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    /* Card and popover colors */
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    /* Brand colors */
-    --brand-orange: 22 95% 62%;
-    --brand-blue: 228 100% 85%;
-
-    /* Success and light background colors */
-    --success-green: 142 71% 45%;
-    --light-bg: 222.2 84% 4.9%;
-
-    /* Sidebar colors */
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {

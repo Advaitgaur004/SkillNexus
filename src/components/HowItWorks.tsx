@@ -28,7 +28,7 @@ const HowItWorks = () => {
             How It Works
           </h2>
           <p className="text-foreground/80 text-lg">
-            A simple guide to starting your journey with SkillSaarthi.
+            A simple guide to starting your journey with SkillNexus.
           </p>
         </div>
 

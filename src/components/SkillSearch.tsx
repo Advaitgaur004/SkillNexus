@@ -49,7 +49,7 @@ const SkillSearch = () => {
         </div>
         
         <h1 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
-          Chart Your Career Path
+          Connecting Potential to Performance
         </h1>
         <p className="text-lg text-foreground/80 mb-8 max-w-2xl mx-auto">
           Your guide to government-backed skill development and employment opportunities.
