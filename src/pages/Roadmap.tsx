@@ -33,17 +33,16 @@ const Roadmap = () => {
   useEffect(() => {
     if (!skill) return;
 
-    // Simulate AI processing
     setLoading(true);
     setProgress(0);
     setError(null);
     setRoadmap(null);
 
     const fetchRoadmap = async () => {
-      const apiKey = import.meta.env.VITE_OPENAI_API_KEY as string | undefined;
+      const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY as string | undefined;
 
       if (!apiKey) {
-        setError("OpenAI API key is missing. Please set VITE_OPENAI_API_KEY in your .env.");
+        setError("OpenRouter API key is missing. Please set VITE_OPENROUTER_API_KEY in your .env.");
         setLoading(false);
         setProgress(100);
         return;
@@ -58,46 +57,43 @@ const Roadmap = () => {
 
         const userSkill = skillName || skill;
 
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
           method: "POST",
           headers: {
+            "Authorization": `Bearer ${apiKey}`,
             "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
+            "HTTP-Referer": window.location.origin, 
+            "X-OpenRouter-Title": "SkillNexus", 
           },
           body: JSON.stringify({
-            model: "gpt-4o",
+            model: "openrouter/free", 
             messages: [
               {
                 role: "system",
-                content: systemPrompt,
+                content: systemPrompt
               },
               {
                 role: "user",
-                content: `User skill: ${userSkill}. Return ONLY a valid JSON object with the required fields.`,
-              },
+                content: `User skill: ${userSkill}`
+              }
             ],
-            temperature: 0.7,
+            response_format: { type: "json_object" }
           }),
         });
 
         if (!response.ok) {
-          throw new Error("Failed to generate roadmap");
+          throw new Error(`API Error: ${response.status}`);
         }
 
         const data = await response.json();
+        
+        // OpenRouter (OpenAI-style) uses a different response structure than Gemini
         const rawText: string = data.choices?.[0]?.message?.content || "";
 
-        const cleaned = rawText
-          .trim()
-          .replace(/^```json\s*/i, "")
-          .replace(/^```/, "")
-          .replace(/```$/, "")
-          .trim();
-
-        const parsed: GeminiRoadmap = JSON.parse(cleaned);
+        const parsed: GeminiRoadmap = JSON.parse(rawText);
         setRoadmap(parsed);
       } catch (err) {
-        console.error("OpenAI error:", err);
+        console.error("OpenRouter API error:", err);
         setError("Unable to generate roadmap right now. Please try again.");
       } finally {
         setLoading(false);
@@ -112,7 +108,7 @@ const Roadmap = () => {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
-        <div className="flex-1 flex items-center justify-center bg-gradient-to-b from-background to-light-bg">
+        <div className="flex-1 flex items-center justify-center bg-background">
           <div className="text-center max-w-md px-4">
             <div className="mb-6 mx-auto h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center">
               <div className="h-12 w-12 rounded-full border-4 border-primary border-t-transparent animate-spin" />
@@ -176,7 +172,6 @@ const Roadmap = () => {
       <Header />
       
       <main className="flex-1">
-        {/* Hero Section */}
         <section className="bg-gradient-to-b from-primary/5 to-background py-12 px-4">
           <div className="container mx-auto max-w-4xl text-center">
             <h1 className="text-3xl md:text-5xl font-bold text-primary mb-3">
@@ -188,7 +183,6 @@ const Roadmap = () => {
           </div>
         </section>
 
-        {/* Progress Indicator */}
         <section className="py-6 px-4 bg-light-bg border-y">
           <div className="container mx-auto max-w-4xl">
             <div className="flex items-center gap-3">
@@ -200,11 +194,9 @@ const Roadmap = () => {
           </div>
         </section>
 
-        {/* Roadmap Steps */}
         <section className="py-12 px-4">
           <div className="container mx-auto max-w-4xl">
             <div className="relative">
-              {/* Vertical line */}
               <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-border hidden md:block" />
 
               <div className="space-y-8">
